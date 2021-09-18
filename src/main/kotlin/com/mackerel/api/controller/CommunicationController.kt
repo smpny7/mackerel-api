@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CommunicationController {
     @RequestMapping("/cron")
-    fun setResult(): JsonResponse<Number?> {
+    fun setResult(): JsonResponse<Boolean> {
         val webRequest = WebRequest()
-        val contents = webRequest.getStatusCode("https://coalabo.net")
+        val contents = webRequest.getIsProtectedBySSL("https://coalabo.net")
         return JsonResponse(true, contents)
     }
 }

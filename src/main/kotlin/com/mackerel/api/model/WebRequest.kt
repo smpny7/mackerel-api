@@ -14,6 +14,17 @@ class WebRequest {
         return client.newCall(request).execute().code
     }
 
+    fun getIsProtectedBySSL(url: String): Boolean {
+        val client = OkHttpClient.Builder()
+            .build()
+        val request: Request = Request.Builder()
+            .url(url)
+            .build()
+        val response = client.newCall(request).execute()
+
+        return response.request.url.isHttps
+    }
+
     fun getTTFB(url: String): String {
         val webRequest = WebRequestEventsListener()
         val client = OkHttpClient.Builder()
