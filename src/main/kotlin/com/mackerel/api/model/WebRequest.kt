@@ -11,7 +11,7 @@ class WebRequest {
             .url(url)
             .build()
 
-        return client.newCall(request).execute().code()
+        return client.newCall(request).execute().code
     }
 
     fun getTTFB(url: String): String {
