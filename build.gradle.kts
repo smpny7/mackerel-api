@@ -29,7 +29,8 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.20")
     annotationProcessor("org.projectlombok:lombok:1.18.20")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.5.4")
-    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("com.google.firebase:firebase-admin:8.0.1")
 }
 
 tasks.withType<KotlinCompile> {

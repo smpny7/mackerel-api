@@ -3,31 +3,13 @@ package com.mackerel.api.model
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 
 class WebRequest(private val url: HttpUrl) {
-    fun getStatusCode(): Number {
-        val client = OkHttpClient.Builder()
-            .build()
-        val request: Request = Request.Builder()
-            .url(this.url)
-            .build()
+    private val response: Response?
+    private val webRequest = WebRequestEventsListener()
 
-        return client.newCall(request).execute().code
-    }
-
-    fun getIsProtectedBySSL(): Boolean {
-        val client = OkHttpClient.Builder()
-            .build()
-        val request: Request = Request.Builder()
-            .url(this.url)
-            .build()
-        val response = client.newCall(request).execute()
-
-        return response.request.url.isHttps
-    }
-
-    fun getTTFB(): Number {
-        val webRequest = WebRequestEventsListener()
+    init {
         val client = OkHttpClient.Builder()
             .eventListener(webRequest)
             .build()
@@ -35,6 +17,27 @@ class WebRequest(private val url: HttpUrl) {
             .url(this.url)
             .build()
 
-        client.newCall(request).execute().use { return webRequest.getTTFB() }
+        this.response = runCatching {
+            client.newCall(request).execute()
+        }.fold(
+            onSuccess = { it },
+            onFailure = { null }
+        )
+    }
+
+    fun getIsSuccessful(): Boolean {
+        return this.response != null
+    }
+
+    fun getStatusCode(): Number {
+        return this.response!!.code
+    }
+
+    fun getIsProtectedBySSL(): Boolean {
+        return this.response!!.request.url.isHttps
+    }
+
+    fun getTTFB(): Number {
+        this.response.use { return webRequest.getTTFB() }
     }
 }
