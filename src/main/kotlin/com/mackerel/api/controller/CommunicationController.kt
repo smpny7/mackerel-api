@@ -1,10 +1,12 @@
 package com.mackerel.api.controller
 
-import com.mackerel.api.model.FirestoreProcess
+import com.mackerel.api.model.firebase.FirestoreProcess
 import com.mackerel.api.model.JsonResponse
 import com.mackerel.api.model.Status
+import com.mackerel.api.model.StatusFromFrontend
 import com.mackerel.api.model.WebRequest
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -28,5 +30,12 @@ class CommunicationController {
             }
         }
         return JsonResponse(true, null)
+    }
+
+    @RequestMapping("/getLogs/{serverId}")
+    fun getLogs(@PathVariable("serverId") serverId: String): JsonResponse<List<StatusFromFrontend>> {
+        val servers = FirestoreProcess().getLogs(serverId)
+
+        return JsonResponse(true, servers)
     }
 }

@@ -1,11 +1,14 @@
-package com.mackerel.api.model
+package com.mackerel.api.model.firebase
 
 import com.google.auth.oauth2.GoogleCredentials
+import com.google.cloud.Timestamp
 import com.google.cloud.firestore.Firestore
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
-import com.mackerel.api.model.firebase.Server
+import com.mackerel.api.model.Status
+import com.mackerel.api.model.StatusFromFrontend
+import java.text.SimpleDateFormat
 
 
 class FirestoreProcess {
@@ -50,6 +53,15 @@ class FirestoreProcess {
             }
         }
         return serverList
+    }
+
+    fun getLogs(serverId: String): List<StatusFromFrontend> {
+        val serverFuture = db.document("logs/${serverId}").collection("statuses").orderBy("createdAt").limitToLast(25).get()
+        val statuses = serverFuture.get().documents
+
+        return statuses.map {
+            StatusFromFrontend(SimpleDateFormat("HH:mm").format((it.data["createdAt"] as Timestamp).toDate()), ttfb = it.data["ttfb"] as Number)
+        }
     }
 
     fun setStatus(serverId: String, status: Status) {
