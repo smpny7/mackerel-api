@@ -6,13 +6,14 @@ import com.mackerel.api.model.Status
 import com.mackerel.api.model.StatusFromFrontend
 import com.mackerel.api.model.WebRequest
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CommunicationController {
-    @RequestMapping("/cron")
+    @Scheduled(cron="0 */15 * * * *")
     fun setResult(): JsonResponse<String?> {
         val servers = FirestoreProcess().getActiveServers()
         for (server in servers) {
